@@ -1,7 +1,10 @@
 <template>
-  <div class="relative min-h-screen bg-[#020617] overflow-hidden">
-    <!-- NuxtPage acts as a window that automatically shows whatever page you navigate to -->
-    <NuxtPage />
+  <div class="relative min-h-screen bg-[#020617] overflow-x-clip">
+    <!-- NuxtLayout applies the layout declared by each page (e.g. 'mobile'); pages without one render as-is -->
+    <NuxtLayout>
+      <!-- NuxtPage acts as a window that automatically shows whatever page you navigate to -->
+      <NuxtPage />
+    </NuxtLayout>
   </div>
 </template>
 

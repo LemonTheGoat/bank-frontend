@@ -1,5 +1,15 @@
 <script setup>
-import { Users, Activity, Database, AlertTriangle } from 'lucide-vue-next';
+import { computed } from 'vue';
+import { Check, ClipboardCheck, Lock, Unlock, X } from 'lucide-vue-next';
+import { useAccountStore } from '~/stores/accountStore';
+
+const accountStore = useAccountStore();
+
+const customers = computed(() => accountStore.customers);
+const pendingApprovals = computed(() => accountStore.pendingApprovals);
+
+const phpFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
+const formatPHP = (value) => phpFormatter.format(Number(value));
 
 // Data arrays moved cleanly into the script block
 const auditLogs = [
@@ -8,12 +18,10 @@ const auditLogs = [
   { id: 3, action: 'AUTH_LOGIN', user: 'unknown', ip: '45.22.19.11', status: 'Failed' },
 ];
 
-const stats = [
-  { label: 'Total Users', value: '1,248', icon: Users, color: 'text-blue-400' },
-  { label: 'Sessions', value: '342', icon: Activity, color: 'text-emerald-400' },
-  { label: 'Pending', value: '0', icon: Database, color: 'text-white' },
-  { label: 'Alerts', value: '3', icon: AlertTriangle, color: 'text-rose-400' },
-];
+const CUSTOMER_STATUS_STYLES = {
+  Active: 'bg-emerald-500/10 text-emerald-500 ring-emerald-500/20 hover:bg-emerald-500/20',
+  Frozen: 'bg-rose-500/10 text-rose-400 ring-rose-500/20 hover:bg-rose-500/20',
+};
 </script>
 
 <template>
@@ -25,16 +33,72 @@ const stats = [
       </div>
     </header>
 
-    <div class="grid gap-4 sm:grid-cols-4 mb-2">
-      <!-- Vue v-for seamlessly loops over the stats array -->
-      <div v-for="(stat, i) in stats" :key="i" class="rounded-2xl border border-slate-700/60 bg-slate-800 p-5 shadow-lg flex items-center gap-4">
-        <!-- Dynamic component binding for Lucide icons -->
-        <component :is="stat.icon" :class="`h-6 w-6 ${stat.color}`" />
-        <div>
-          <p class="text-[10px] uppercase tracking-wider text-slate-400">{{ stat.label }}</p>
-          <p class="text-lg font-bold text-white">{{ stat.value }}</p>
-        </div>
+    <div class="rounded-[2rem] border border-slate-700/60 bg-slate-800 p-6 shadow-lg">
+      <h2 class="text-sm font-medium text-slate-300 mb-4">Customers</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[640px] text-left text-xs">
+          <thead>
+            <tr class="border-b border-slate-700/50 text-slate-400">
+              <th class="pb-3 font-medium">Name</th>
+              <th class="pb-3 font-medium">Account Number</th>
+              <th class="pb-3 font-medium text-right">Balance</th>
+              <th class="pb-3 font-medium text-right">Status</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-300">
+            <tr v-for="customer in customers" :key="customer.id" class="border-b border-slate-700/30 last:border-0 hover:bg-slate-700/20">
+              <td class="py-3 font-medium text-white">{{ customer.name }}</td>
+              <td class="py-3 font-mono">{{ customer.accountNumber }}</td>
+              <td class="py-3 text-right font-mono tabular-nums">{{ formatPHP(customer.balance) }}</td>
+              <td class="py-3 text-right">
+                <button
+                  type="button"
+                  @click="accountStore.toggleCustomerStatus(customer.id)"
+                  :class="`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[10px] font-medium ring-1 ring-inset transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${CUSTOMER_STATUS_STYLES[customer.status]}`"
+                >
+                  <Unlock v-if="customer.status === 'Active'" class="h-3 w-3" />
+                  <Lock v-else class="h-3 w-3" />
+                  {{ customer.status }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
+
+    <div class="rounded-[2rem] border border-slate-700/60 bg-slate-800 p-6 shadow-lg">
+      <h2 class="text-sm font-medium text-slate-300 mb-4">Pending Approvals</h2>
+      <p v-if="pendingApprovals.length === 0" class="flex items-center gap-2 py-6 text-xs text-slate-400">
+        <ClipboardCheck class="h-4 w-4 text-emerald-500" />
+        No pending approvals.
+      </p>
+      <ul v-else class="divide-y divide-slate-700/30">
+        <li v-for="approval in pendingApprovals" :key="approval.id" class="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-white">{{ approval.customerName }}</p>
+            <p class="text-xs text-slate-400">
+              {{ approval.type }} · <span class="font-mono text-slate-300">{{ formatPHP(approval.amount) }}</span>
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              @click="accountStore.resolveApproval(approval.id, 'approve')"
+              class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-500 ring-1 ring-inset ring-emerald-500/20 transition-colors hover:bg-emerald-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            >
+              <Check class="h-3.5 w-3.5" /> Approve
+            </button>
+            <button
+              type="button"
+              @click="accountStore.resolveApproval(approval.id, 'reject')"
+              class="inline-flex items-center gap-1.5 rounded-lg bg-rose-500/10 px-3 py-1.5 text-xs font-medium text-rose-400 ring-1 ring-inset ring-rose-500/20 transition-colors hover:bg-rose-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+            >
+              <X class="h-3.5 w-3.5" /> Reject
+            </button>
+          </div>
+        </li>
+      </ul>
     </div>
 
     <div class="rounded-[2rem] border border-slate-700/60 bg-slate-800 p-6 shadow-lg">

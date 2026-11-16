@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import Decimal from 'decimal.js';
-import { mockUser, mockAccount, mockLoan, mockTransactions } from '../utils/mockData';
+import { mockUser, mockAccount, mockLoan, mockTransactions, customers, pendingApprovals } from '../utils/mockData';
 
 export const useAccountStore = defineStore('account', {
   // 'state' is the exact equivalent of your Redux initialState
@@ -9,6 +9,8 @@ export const useAccountStore = defineStore('account', {
     account: mockAccount,
     loan: mockLoan,
     transactions: mockTransactions,
+    customers: customers,
+    pendingApprovals: pendingApprovals,
   }),
   
   // 'actions' are your Redux reducers
@@ -40,6 +42,15 @@ export const useAccountStore = defineStore('account', {
         description: description,
         created_at: new Date().toISOString()
       });
+    },
+    toggleCustomerStatus(id) {
+      const customer = this.customers.find((c) => c.id === id);
+      if (!customer) return;
+      customer.status = customer.status === 'Active' ? 'Frozen' : 'Active';
+    },
+    resolveApproval(id, decision) {
+      if (decision !== 'approve' && decision !== 'reject') return;
+      this.pendingApprovals = this.pendingApprovals.filter((a) => a.id !== id);
     }
   }
 });

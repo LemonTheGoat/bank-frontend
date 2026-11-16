@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 import {
   ArrowDownLeft, ArrowLeftRight, ArrowUpRight, Banknote, ChevronDown,
   ChevronsUpDown, CreditCard, FileText, LayoutDashboard, LifeBuoy, Menu,
-  Search, Settings, ShieldCheck, X
+  Search, Settings, ShieldCheck, Smartphone, X
 } from 'lucide-vue-next';
 import { useAccountStore } from '~/stores/accountStore';
 
@@ -58,7 +58,8 @@ const NAV_ITEMS = [
 
 const FOOTER_ITEMS = [
   { id: 'help', label: 'Help', icon: LifeBuoy },
-  { id: 'admin', label: 'Admin Console', icon: Settings },
+  { id: 'mobile', label: 'Mobile App', icon: Smartphone, to: '/mobile' },
+  { id: 'admin', label: 'Admin Console', icon: Settings, to: '/admin' },
 ];
 
 const TABS = [
@@ -151,7 +152,7 @@ const isCredit = (amount) => Number(amount) > 0;
         <div class="mt-auto pt-6">
           <ul class="space-y-1">
             <li v-for="item in FOOTER_ITEMS" :key="item.id">
-              <a href="#" @click.prevent="currentView = item.id; navOpen = false" :class="`group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${FOCUS_RING} ${currentView === item.id ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`">
+              <a href="#" @click.prevent="item.to ? navigateTo(item.to) : (currentView = item.id, navOpen = false)" :class="`group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${FOCUS_RING} ${currentView === item.id ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'}`">
                 <span v-if="currentView === item.id" aria-hidden="true" class="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-emerald-500"></span>
                 <component :is="item.icon" aria-hidden="true" :class="`h-4 w-4 shrink-0 transition-colors ${currentView === item.id ? 'text-emerald-500' : 'text-slate-500 group-hover:text-slate-300'}`" />
                 {{ item.label }}

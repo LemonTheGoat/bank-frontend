@@ -58,3 +58,58 @@ export const mockTransactions = [
     created_at: "2026-10-13T09:00:00Z"
   }
 ];
+
+export const customers = [
+  {
+    id: 1,
+    name: "Liam Salcedo",
+    accountNumber: "PH-8820-1092-44",
+    balance: "24500.00",
+    status: "Active"
+  },
+  {
+    id: 2,
+    name: "Maria Santos",
+    accountNumber: "PH-4417-0356-18",
+    balance: "86200.50",
+    status: "Active"
+  },
+  {
+    id: 3,
+    name: "Juan Dela Cruz",
+    accountNumber: "PH-2239-7741-03",
+    balance: "3150.75",
+    status: "Frozen"
+  },
+  {
+    id: 4,
+    name: "Ana Reyes",
+    accountNumber: "PH-6605-2284-97",
+    balance: "512340.00",
+    status: "Active"
+  }
+];
+
+export const pendingApprovals = [
+  {
+    id: 1,
+    customerName: "Maria Santos",
+    type: "Loan",
+    amount: "250000.00",
+    status: "Pending"
+  },
+  {
+    id: 2,
+    customerName: "Ana Reyes",
+    type: "High-Value Transfer",
+    amount: "120000.00",
+    status: "Pending"
+  },
+  {
+    id: 3,
+    customerName: "Liam Salcedo",
+    type: "High-Value Transfer",
+    amount: "75000.00",
+    status: "Pending"
+  }
+];
