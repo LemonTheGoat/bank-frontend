@@ -1,0 +1,51 @@
+/* Backdrop: fades in/out while its blur eases in/out */
+.liquid-backdrop {
+  backdrop-filter: blur(8px);
+}
+.liquid-backdrop-enter-active,
+.liquid-backdrop-leave-active {
+  transition: opacity 260ms ease-out, backdrop-filter 260ms ease-out;
+}
+.liquid-backdrop-enter-from,
+.liquid-backdrop-leave-to {
+  opacity: 0;
+  backdrop-filter: blur(0px);
+}
+
+/* Modal card: springy pop-out on open, quicker ease-in on close */
+.liquid-modal-enter-active {
+  transition: opacity 340ms cubic-bezier(0.22, 1.25, 0.36, 1), transform 340ms cubic-bezier(0.22, 1.25, 0.36, 1), filter 340ms cubic-bezier(0.22, 1.25, 0.36, 1);
+}
+.liquid-modal-leave-active {
+  transition: opacity 200ms ease-in, transform 200ms ease-in, filter 200ms ease-in;
+}
+.liquid-modal-enter-from {
+  opacity: 0;
+  transform: scale(0.84) translateY(16px);
+  filter: blur(6px);
+}
+.liquid-modal-leave-to {
+  opacity: 0;
+  transform: scale(0.92) translateY(10px);
+  filter: blur(4px);
+}
+
+/* Form <-> receipt content swap inside the modal card */
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+  transition: opacity 220ms ease-out, transform 220ms ease-out;
+}
+.fade-scale-enter-from,
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+/* Confirmation badge pops in from half size */
+.receipt-badge {
+  animation: receipt-pop 420ms cubic-bezier(0.22, 1.25, 0.36, 1) both;
+}
+@keyframes receipt-pop {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

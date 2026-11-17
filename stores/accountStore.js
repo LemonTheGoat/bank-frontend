@@ -43,6 +43,26 @@ export const useAccountStore = defineStore('account', {
         created_at: new Date().toISOString()
       });
     },
+    depositFunds(amount, method = 'Mobile Cash-In') {
+      // Use decimal.js to avoid Javascript floating point math errors
+      const depositAmount = new Decimal(amount);
+      if (!depositAmount.isFinite() || depositAmount.lte(0)) return;
+
+      const currentBalance = new Decimal(this.account.balance);
+      this.account.balance = currentBalance.plus(depositAmount).toFixed(2);
+
+      // Prepend so it shows first in Recent Activity
+      this.transactions.unshift({
+        id: Date.now(),
+        source_account_id: null,
+        destination_account_id: this.account.id,
+        amount: depositAmount.toFixed(2),
+        type: "deposit",
+        status: "completed",
+        description: `Deposit via ${method}`,
+        created_at: new Date().toISOString()
+      });
+    },
     toggleCustomerStatus(id) {
       const customer = this.customers.find((c) => c.id === id);
       if (!customer) return;

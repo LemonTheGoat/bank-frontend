@@ -1,9 +1,28 @@
+<script setup>
+import { computed, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
+// Tabs share one mounted track, so switching between them must not trigger any route transition
+const MOBILE_TABS = ['/mobile', '/mobile/cards', '/mobile/loans'];
+const isMobileTabSwitch = ref(false);
+
+watch(() => route.path, (to, from) => {
+  isMobileTabSwitch.value = MOBILE_TABS.includes(to) && MOBILE_TABS.includes(from);
+}, { flush: 'sync' });
+
+const pageTransition = computed(() =>
+  isMobileTabSwitch.value ? false : { name: 'page', mode: 'out-in' }
+);
+</script>
+
 <template>
   <div class="relative min-h-screen bg-[#020617] overflow-x-clip">
     <!-- NuxtLayout applies the layout declared by each page (e.g. 'mobile'); pages without one render as-is -->
     <NuxtLayout>
       <!-- NuxtPage acts as a window that automatically shows whatever page you navigate to -->
-      <NuxtPage />
+      <NuxtPage :transition="pageTransition" />
     </NuxtLayout>
   </div>
 </template>
@@ -12,7 +31,7 @@
 /* Nuxt uses these specific class names automatically for page transitions */
 .page-enter-active,
 .page-leave-active {
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
 }
 
 .page-enter-from,
