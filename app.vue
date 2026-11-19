@@ -4,6 +4,14 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
+const { theme, initTheme } = useTheme();
+initTheme();
+useHead({
+  htmlAttrs: {
+    class: computed(() => (theme.value === 'dark' ? 'dark' : ''))
+  }
+});
+
 // Tabs share one mounted track, so switching between them must not trigger any route transition
 const MOBILE_TABS = ['/mobile', '/mobile/cards', '/mobile/loans'];
 const isMobileTabSwitch = ref(false);
@@ -18,7 +26,7 @@ const pageTransition = computed(() =>
 </script>
 
 <template>
-  <div class="relative min-h-screen bg-[#020617] overflow-x-clip">
+  <div class="relative min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 overflow-x-clip dark:bg-slate-950 dark:text-slate-100">
     <!-- NuxtLayout applies the layout declared by each page (e.g. 'mobile'); pages without one render as-is -->
     <NuxtLayout>
       <!-- NuxtPage acts as a window that automatically shows whatever page you navigate to -->

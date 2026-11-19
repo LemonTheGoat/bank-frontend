@@ -10,9 +10,10 @@ const transferPrefill = ref('');
 const depositOpen = ref(false);
 const scanOpen = ref(false);
 
-const CARD_CLASS = 'rounded-2xl border border-white/[0.07] bg-slate-900/60 shadow-lg backdrop-blur-md';
+const CARD_CLASS = 'rounded-2xl border border-slate-200/80 bg-white/75 shadow-sm backdrop-blur-md transition-colors duration-300 dark:border-slate-800/80 dark:bg-slate-900/60 dark:shadow-none';
 const FOCUS_RING = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500';
-const QUICK_ACTION_CLASS = `group relative flex flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border border-white/[0.07] bg-slate-900/60 py-4 text-xs font-medium text-slate-200 shadow-lg backdrop-blur-md transition-transform duration-300 ease-[cubic-bezier(0.22,1.35,0.36,1)] active:scale-[0.91] hover:border-emerald-500/40 hover:bg-slate-800/80 hover:text-white ${FOCUS_RING}`;
+const QUICK_ACTION_CLASS = `group relative flex flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/75 py-4 text-xs font-medium text-slate-700 shadow-sm backdrop-blur-md transition-transform duration-300 ease-[cubic-bezier(0.22,1.35,0.36,1)] active:scale-[0.91] hover:border-emerald-500/40 hover:text-slate-900 dark:border-slate-800/80 dark:bg-slate-900/60 dark:text-slate-200 dark:shadow-none dark:hover:bg-slate-800/80 dark:hover:text-white ${FOCUS_RING}`;
+const QUICK_ICON_CLASS = 'h-5 w-5 text-emerald-600 transition-colors group-hover:text-emerald-500 dark:text-emerald-500 dark:group-hover:text-emerald-400';
 
 const ripples = reactive({ send: 0, deposit: 0, scan: 0 });
 const ripple = (id) => {
@@ -51,10 +52,10 @@ const onScanned = (recipient) => {
   <div class="flex w-full flex-col gap-5">
     <header class="flex items-center justify-between">
       <div>
-        <p class="text-xs text-slate-400">Welcome back</p>
-        <h1 class="text-lg font-semibold text-white">Hey, {{ accountStore.user.first_name }}</h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Welcome back</p>
+        <h1 class="text-lg font-semibold text-slate-900 dark:text-white">Hey, {{ accountStore.user.first_name }}</h1>
       </div>
-      <span class="grid h-9 w-9 place-items-center rounded-full bg-emerald-500/15 text-[11px] font-semibold text-emerald-500 ring-1 ring-emerald-500/30">
+      <span class="grid h-9 w-9 place-items-center rounded-full bg-emerald-500/15 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-500/30 dark:text-emerald-500">
         {{ initials }}
       </span>
     </header>
@@ -62,25 +63,25 @@ const onScanned = (recipient) => {
     <!-- Compact Balance Card -->
     <section :class="`${CARD_CLASS} flex flex-col gap-4 p-5`">
       <div class="flex items-center justify-between">
-        <p class="text-xs font-medium text-slate-400">Available balance</p>
-        <span class="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-medium text-emerald-500 ring-1 ring-inset ring-emerald-500/20 bg-emerald-500/10">
+        <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Available balance</p>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-500/20 dark:text-emerald-500">
           <ShieldCheck aria-hidden="true" class="h-3 w-3" />
           {{ accountStore.account.status === 'active' ? 'Active' : accountStore.account.status }}
         </span>
       </div>
 
-      <p class="text-3xl font-semibold tracking-tight tabular-nums text-white">
+      <p class="text-3xl font-semibold tracking-tight tabular-nums text-slate-900 dark:text-white">
         {{ formatPHP(accountStore.account.balance) }}
       </p>
 
-      <div class="flex items-end justify-between gap-3 border-t border-slate-700/60 pt-3">
+      <div class="flex items-end justify-between gap-3 border-t border-slate-200 pt-3 dark:border-slate-700/60">
         <div class="min-w-0">
-          <p class="text-[10px] uppercase tracking-wider text-slate-400">Account number</p>
-          <p class="mt-0.5 text-xs tabular-nums text-white">{{ accountStore.account.account_number }}</p>
+          <p class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">Account number</p>
+          <p class="mt-0.5 text-xs tabular-nums text-slate-900 dark:text-white">{{ accountStore.account.account_number }}</p>
         </div>
         <div class="min-w-0 text-right">
-          <p class="text-[10px] uppercase tracking-wider text-slate-400">Holder</p>
-          <p class="mt-0.5 truncate text-xs font-medium text-white">{{ fullName }}</p>
+          <p class="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400">Holder</p>
+          <p class="mt-0.5 truncate text-xs font-medium text-slate-900 dark:text-white">{{ fullName }}</p>
         </div>
       </div>
     </section>
@@ -90,7 +91,7 @@ const onScanned = (recipient) => {
       <button
         type="button"
         @click="ripple('send'); openSend()"
-        :class="`flex flex-col items-center justify-center gap-2 rounded-2xl bg-emerald-500 py-4 text-xs font-semibold text-slate-900 relative overflow-hidden shadow-lg transition-transform duration-300 ease-[cubic-bezier(0.22,1.35,0.36,1)] active:scale-[0.91] hover:bg-emerald-400 ${FOCUS_RING}`"
+        :class="`relative flex flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl bg-emerald-500 py-4 text-xs font-semibold text-slate-950 shadow-lg transition-transform duration-300 ease-[cubic-bezier(0.22,1.35,0.36,1)] active:scale-[0.91] hover:bg-emerald-400 ${FOCUS_RING}`"
       >
         <Send aria-hidden="true" class="h-5 w-5" />
         Send Money
@@ -98,13 +99,13 @@ const onScanned = (recipient) => {
       </button>
 
       <button type="button" @click="ripple('deposit'); depositOpen = true" :class="QUICK_ACTION_CLASS">
-        <ArrowDownToLine aria-hidden="true" class="h-5 w-5 text-emerald-500 transition-colors group-hover:text-emerald-400" />
+        <ArrowDownToLine aria-hidden="true" :class="QUICK_ICON_CLASS" />
         Deposit
         <span v-if="ripples.deposit" :key="ripples.deposit" @animationend="ripples.deposit = 0" class="liquid-ripple pointer-events-none absolute left-1/2 top-1/2 h-16 w-16 rounded-full bg-emerald-400/40 blur-md"></span>
       </button>
 
       <button type="button" @click="ripple('scan'); scanOpen = true" :class="QUICK_ACTION_CLASS">
-        <QrCode aria-hidden="true" class="h-5 w-5 text-emerald-500 transition-colors group-hover:text-emerald-400" />
+        <QrCode aria-hidden="true" :class="QUICK_ICON_CLASS" />
         Scan QR
         <span v-if="ripples.scan" :key="ripples.scan" @animationend="ripples.scan = 0" class="liquid-ripple pointer-events-none absolute left-1/2 top-1/2 h-16 w-16 rounded-full bg-emerald-400/40 blur-md"></span>
       </button>
@@ -113,25 +114,25 @@ const onScanned = (recipient) => {
     <!-- Compact Transaction History -->
     <section :class="`${CARD_CLASS} p-4`">
       <div class="mb-3 flex items-center justify-between">
-        <h2 class="text-sm font-medium text-slate-300">Recent Activity</h2>
-        <span class="text-[10px] uppercase tracking-wider text-slate-500">Last {{ recentTransactions.length }}</span>
+        <h2 class="text-sm font-medium text-slate-700 dark:text-slate-300">Recent Activity</h2>
+        <span class="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">Last {{ recentTransactions.length }}</span>
       </div>
 
-      <p v-if="recentTransactions.length === 0" class="py-6 text-center text-xs text-slate-400">No transactions yet.</p>
+      <p v-if="recentTransactions.length === 0" class="py-6 text-center text-xs text-slate-500 dark:text-slate-400">No transactions yet.</p>
 
-      <ul v-else class="divide-y divide-slate-700/50">
+      <ul v-else class="divide-y divide-slate-200 dark:divide-slate-700/50">
         <li v-for="tx in recentTransactions" :key="tx.id" class="flex items-center justify-between gap-3 py-3">
           <div class="flex min-w-0 items-center gap-3">
-            <span :class="`grid h-8 w-8 shrink-0 place-items-center rounded-full ${Number(tx.amount) > 0 ? 'bg-emerald-500/10 text-emerald-500' : 'bg-slate-700 text-slate-300'}`">
+            <span :class="`grid h-8 w-8 shrink-0 place-items-center rounded-full ${Number(tx.amount) > 0 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-500' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}`">
               <ArrowDownLeft v-if="Number(tx.amount) > 0" aria-hidden="true" class="h-4 w-4" />
               <ArrowUpRight v-else aria-hidden="true" class="h-4 w-4" />
             </span>
             <div class="min-w-0">
-              <p class="truncate text-sm font-medium text-white">{{ tx.description }}</p>
-              <p class="text-[11px] text-slate-400">{{ dateFormatter.format(new Date(tx.created_at)) }}</p>
+              <p class="truncate text-sm font-medium text-slate-900 dark:text-white">{{ tx.description }}</p>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ dateFormatter.format(new Date(tx.created_at)) }}</p>
             </div>
           </div>
-          <p :class="`shrink-0 text-sm font-semibold tabular-nums ${Number(tx.amount) > 0 ? 'text-emerald-500' : 'text-slate-100'}`">
+          <p :class="`shrink-0 text-sm font-semibold tabular-nums ${Number(tx.amount) > 0 ? 'text-emerald-600 dark:text-emerald-500' : 'text-slate-900 dark:text-slate-100'}`">
             {{ formatSignedPHP(tx.amount) }}
           </p>
         </li>
